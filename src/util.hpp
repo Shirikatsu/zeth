@@ -18,6 +18,7 @@ namespace libzeth
 
 std::vector<bool> hex_to_binary_vector(std::string str);
 std::vector<bool> hex_digest_to_binary_vector(std::string str);
+bits384 hex_value_to_bits384(std::string digest_hex_str);
 bits256 hex_digest_to_bits256(std::string digest_hex_str);
 bits64 hex_value_to_bits64(std::string value_hex_str);
 
