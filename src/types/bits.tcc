@@ -57,21 +57,6 @@ std::array<bool, BitLen> binary_addition(
     return sum;
 }
 
-/// binary_xor computes the XOR of 2 binary strings
-template<size_t BitLen>
-std::array<bool, BitLen> binary_xor(
-    std::array<bool, BitLen> A, std::array<bool, BitLen> B)
-{
-    std::array<bool, BitLen> xor_array;
-    xor_array.fill(0);
-
-    for (int i = BitLen - 1; i >= 0; i--) {
-        xor_array[i] = A[i] != B[i];
-    }
-
-    return xor_array;
-}
-
 } // namespace libzeth
 
 #endif // __ZETH_TYPES_BITS_TCC__

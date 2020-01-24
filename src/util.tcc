@@ -10,21 +10,6 @@
 namespace libzeth
 {
 
-// Takes a binary string and swaps the bit endianness
-template<typename T> T swap_bit_endianness(T v)
-{
-    size_t len = v.size();
-    if (len == 0) {
-        throw std::length_error(
-            "Invalid bit length for the given boolean vector (should be > 0)");
-    }
-
-    for (size_t i = 0; i < len / 2; i++) {
-        std::swap(v[i], v[(len - 1) - i]);
-    }
-    return v;
-}
-
 // Takes a binary string and swaps the byte endianness
 template<typename FieldT>
 std::vector<FieldT> swap_byte_endianness(std::vector<FieldT> value)
