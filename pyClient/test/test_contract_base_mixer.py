@@ -16,15 +16,15 @@ import test_commands.mock as mock
 # it is structured as follows,
 UNPACKED_PRIMARY_INPUTS = [
     0,  # rt
-    8,  # nf_0 = "...1 000"
-    9,  # nf_1 = "...1 001"
-    18,  # cm_0 = "...10 010"
-    19,  # cm_1 = "...10 011"
+    24,  # nf_0 = "...11 000"
+    33,  # nf_1 = "...100 001"
+    1,  # cm_0 = "...1"
+    2,  # cm_1 = "...10"
     2**PUBLIC_VALUE_LENGTH - 1,  # v_in = "1...1"
     0,  # v_out = "0...0"
-    31,  # h_sig = "...11 111"
-    36,  # htag_0 = "...100 100"
-    37  # htag_1 = "...100 101"
+    47,  # h_sig = "...101 111"
+    50,  # htag_0 = "...110 010"
+    59  # htag_1 = "...111 011"
 ]
 # The values were set so that the RESIDUAL_BITS are easily distinguishable.
 
@@ -32,14 +32,14 @@ UNPACKED_PRIMARY_INPUTS = [
 #   rt || {nf}_1,2 || {cm}_1,2 || h_sig || {h}_1,2 || RESIDUAL_BITS
 PACKED_PRIMARY_INPUTS = [
     0,  # root
-    1,  # nf_0
-    1,  # nf_1
-    2,  # cm_0
+    1,  # cm_0
     2,  # cm_1
-    3,  # h_sig
-    4,  # h_0
-    4,  # h_1
-    713623846352979940490457358497079434602616037] \
+    3,  # nf_0
+    4,  # nf_1
+    5,  # h_sig
+    6,  # h_0
+    7,  # h_1
+    11150372599265311570163396226516866165665875] \
         # pylint: disable=no-member,invalid-name
 
 # RESIDUAL_BITS =
@@ -60,20 +60,16 @@ PACKED_PRIMARY_INPUTS = [
 # h_sig = "111" = 7
 # nf_0  = "000" = 0
 # nf_1  = "001" = 1
-# cm_0  = "010" = 2
-# cm_1  = "011" = 3
-# h_0   = "100" = 4
-# h_1   = "101" = 5
+# h_0   = "100" = 2
+# h_1   = "101" = 3
 RESIDUAL_BITS = [
     2**PUBLIC_VALUE_LENGTH - 1,  # v_in
     0,  # v_out
     7,  # h_sig
     0,  # nf_0
     1,  # nf_1
-    2,  # cm_0
-    3,  # cm_1
-    4,  # h_0
-    5  # h_1
+    2,  # h_0
+    3  # h_1
     ]  # pylint: disable=no-member,invalid-name
 
 

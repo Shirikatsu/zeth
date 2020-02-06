@@ -186,6 +186,8 @@ TEST(TestNoteCircuits, TestOutputNoteGadget)
     // cm = blake2sCompress(outer_k || 0^192 || value_v)
     bits256 cm_bits256 = get_bits256_from_vector(hex_digest_to_binary_vector(
         "626876b3e2747325f469df067b1f86c8474ffe85e97f56f273c5798dcfccd925"));
+    FieldT cm = FieldT("7347447679663648782381558941340994878602749621591600723"
+                       "22531099530620623139");
     libff::leave_block(
         "Initialize the output coins' data (a_pk, cm, rho)", true);
 
@@ -198,9 +200,9 @@ TEST(TestNoteCircuits, TestOutputNoteGadget)
     rho_digest->generate_r1cs_witness(
         libff::bit_vector(get_vector_from_bits256(rho_bits256)));
 
-    std::shared_ptr<libsnark::digest_variable<FieldT>> commitment;
-    commitment.reset(new libsnark::digest_variable<FieldT>(
-        pb, HashT::get_digest_len(), "root_digest"));
+    std::shared_ptr<libsnark::pb_variable<FieldT>> commitment;
+    commitment.reset(new libsnark::pb_variable<FieldT>);
+    commitment->allocate(pb, "commitment");
     std::shared_ptr<output_note_gadget<FieldT, HashT>> output_note_g =
         std::shared_ptr<output_note_gadget<FieldT, HashT>>(
             new output_note_gadget<FieldT, HashT>(
@@ -220,10 +222,7 @@ TEST(TestNoteCircuits, TestOutputNoteGadget)
     ASSERT_TRUE(is_valid_witness);
 
     // Last check to make sure the commitment computed is the expected one
-    libff::bit_vector obtained_digest = commitment->get_digest();
-    libff::bit_vector expected_digest =
-        libff::bit_vector(get_vector_from_bits256(cm_bits256));
-    ASSERT_EQ(obtained_digest, expected_digest);
+    ASSERT_EQ(pb.val(*commitment), cm);
 };
 
 } // namespace
