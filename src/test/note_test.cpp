@@ -184,8 +184,8 @@ TEST(TestNoteCircuits, TestOutputNoteGadget)
     // inner_k = blake2sCompress(a_pk || rho)
     // outer_k = blake2sCompress(r || [inner_commitment]_128)
     // cm = blake2sCompress(outer_k || 0^192 || value_v)
-    bits256 cm_bits256 = get_bits256_from_vector(hex_digest_to_binary_vector(
-        "626876b3e2747325f469df067b1f86c8474ffe85e97f56f273c5798dcfccd925"));
+    // bits256 cm_bits256 = get_bits256_from_vector(hex_digest_to_binary_vector(
+    //    "626876b3e2747325f469df067b1f86c8474ffe85e97f56f273c5798dcfccd925"));
     FieldT cm = FieldT("7347447679663648782381558941340994878602749621591600723"
                        "22531099530620623139");
     libff::leave_block(

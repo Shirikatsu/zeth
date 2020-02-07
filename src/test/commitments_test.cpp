@@ -189,9 +189,10 @@ TEST(TestCOMMs, TestCOMMGadget)
     bits256 a_pk_bits256 = get_bits256_from_vector(
         hex_digest_to_binary_vector("5c36fea42b82800d74304aa4f875142b42"
                                     "1b4f2847e7c41c1077fbbcfd63f886"));
-    bits256 cm_bits256 = get_bits256_from_vector(
-        hex_digest_to_binary_vector("f1378e66b0037337743d1ca5c83ed28c4e"
-                                    "873c3fb242dcef3ff0db4ebe82c15f"));
+    // bits256 cm_bits256 = get_bits256_from_vector(
+    //    hex_digest_to_binary_vector("f1378e66b0037337743d1ca5c83ed28c4e"
+    //                                "873c3fb242dcef3ff0db4ebe82c15f"));
+    FieldT cm_field = FieldT("21552584426205096764585561853660508177695747169745897618121094192716929220955");
 
     // hex: 0xAF000000000000FF00000000000000FF00000000000000FF00000000000000FF
     libsnark::pb_variable_array<FieldT> a_pk;
@@ -210,9 +211,9 @@ TEST(TestCOMMs, TestCOMMGadget)
     v.allocate(pb, 64, "v");
     v.fill_with_bits(pb, get_vector_from_bits64(value_bits64));
 
-    std::shared_ptr<libsnark::digest_variable<FieldT>> result;
-    result.reset(new libsnark::digest_variable<FieldT>(
-        pb, HashT::get_digest_len(), "result"));
+    std::shared_ptr<libsnark::pb_variable<FieldT>> result;
+    result.reset(new libsnark::pb_variable<FieldT>);
+    result->allocate(pb, " result");
 
     std::shared_ptr<COMM_cm_gadget<FieldT, HashT>> comm_cm_gadget;
     comm_cm_gadget.reset(
@@ -223,7 +224,7 @@ TEST(TestCOMMs, TestCOMMGadget)
     bool is_valid_witness = pb.is_satisfied();
     ASSERT_TRUE(is_valid_witness);
 
-    ASSERT_EQ(result->get_digest(), get_vector_from_bits256(cm_bits256));
+    ASSERT_EQ(pb.val(*result), cm_field);
 };
 
 } // namespace

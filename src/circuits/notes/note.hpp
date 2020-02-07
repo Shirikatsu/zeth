@@ -54,11 +54,7 @@ private:
 
     std::shared_ptr<COMM_cm_gadget<FieldT, HashT>> commit_to_inputs_cm;
     // Note commitment (bits), output of COMM gadget
-    std::shared_ptr<libsnark::digest_variable<FieldT>> commitment;
-    // Packing gadget to pack commitment from bits to field elements
-    std::shared_ptr<libsnark::packing_gadget<FieldT>> bits_to_field;
-    // Note commitment (field), input of Merkle Tree gadget
-    std::shared_ptr<libsnark::pb_variable<FieldT>> field_cm;
+    std::shared_ptr<libsnark::pb_variable<FieldT>> commitment;
 
     // Bit that checks whether the commitment (leaf) has to be found in the
     // merkle tree (Necessary to support dummy notes of value 0)
@@ -111,17 +107,12 @@ private:
     std::shared_ptr<libsnark::digest_variable<FieldT>> a_pk;
     std::shared_ptr<COMM_cm_gadget<FieldT, HashT>> commit_to_outputs_cm;
 
-    // Note commitment (bits), output of COMMIT gadget
-    std::shared_ptr<libsnark::digest_variable<FieldT>> commitment;
-    // Packing gadget to pack commitment from bits to field elements
-    std::shared_ptr<libsnark::packing_gadget<FieldT>> bits_to_field;
-
 public:
     output_note_gadget(
         libsnark::protoboard<FieldT> &pb,
         const libsnark::pb_variable<FieldT> &ZERO,
         std::shared_ptr<libsnark::digest_variable<FieldT>> rho,
-        std::shared_ptr<libsnark::pb_variable<FieldT>> field_cm,
+        std::shared_ptr<libsnark::pb_variable<FieldT>> cm,
         const std::string &annotation_prefix = "output_note_gadget");
 
     // Check the booleaness of the a_pk
