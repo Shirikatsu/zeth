@@ -280,7 +280,6 @@ output_note_gadget<FieldT, HashT>::output_note_gadget(
     a_pk.reset(new libsnark::digest_variable<FieldT>(
         pb, HashT::get_digest_len(), FMT(this->annotation_prefix, " a_pk")));
 
-
     // Commit to the output notes publicly without disclosing them.
     commit_to_outputs_cm.reset(new COMM_cm_gadget<FieldT, HashT>(
         pb, ZERO, a_pk->bits, rho->bits, this->r, this->value, cm));

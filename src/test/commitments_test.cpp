@@ -192,7 +192,8 @@ TEST(TestCOMMs, TestCOMMGadget)
     // bits256 cm_bits256 = get_bits256_from_vector(
     //    hex_digest_to_binary_vector("f1378e66b0037337743d1ca5c83ed28c4e"
     //                                "873c3fb242dcef3ff0db4ebe82c15f"));
-    FieldT cm_field = FieldT("21552584426205096764585561853660508177695747169745897618121094192716929220955");
+    FieldT cm_field = FieldT("2155258442620509676458556185366050817769574716974"
+                             "5897618121094192716929220955");
 
     // hex: 0xAF000000000000FF00000000000000FF00000000000000FF00000000000000FF
     libsnark::pb_variable_array<FieldT> a_pk;
