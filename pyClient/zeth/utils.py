@@ -46,6 +46,7 @@ class EtherValue:
     Representation of some amount of Ether (or any token) in terms of Wei.
     Disambiguates Ether values from other units such as zeth_units.
     """
+
     def __init__(self, val: Union[str, int, float], units: str = 'ether'):
         self.wei = Web3.toWei(val, units)
 
@@ -126,7 +127,7 @@ def extend_32bytes(value: bytes) -> bytes:
     Pad value on the left with zeros, to make 32 bytes.
     """
     assert len(value) <= 32
-    return bytes(32-len(value)) + value
+    return bytes(32 - len(value)) + value
 
 
 def hex_extend_32bytes(element: str) -> str:
@@ -177,16 +178,16 @@ def encrypt(message: str, pk_receiver: PublicKey, sk_sender: PrivateKey) -> byte
 
 
 def decrypt(
-        encrypted_message: bytes,
-        pk_sender: PublicKey,
-        sk_receiver: PrivateKey) -> str:
+    encrypted_message: bytes,
+    pk_sender: PublicKey,
+    sk_receiver: PrivateKey) -> str:
     """
     Decrypts a string message by using valid ec25519 public key and private key
     objects.  See: https://pynacl.readthedocs.io/en/stable/public/
     """
-    assert(isinstance(pk_sender, PublicKey)), \
+    assert (isinstance(pk_sender, PublicKey)), \
         f"PublicKey: {pk_sender} ({type(pk_sender)})"
-    assert(isinstance(sk_receiver, PrivateKey)), \
+    assert (isinstance(sk_receiver, PrivateKey)), \
         f"PrivateKey: {sk_receiver} ({type(sk_receiver)})"
 
     # Init encryption box instance
@@ -203,8 +204,8 @@ def parse_zksnark_arg() -> str:
     """
     parser = argparse.ArgumentParser(
         description="Testing Zeth transactions using the specified zkSNARK " +
-        "('GROTH16' or 'PGHR13').\nNote that the zkSNARK must match the one " +
-        "used on the prover server.")
+                    "('GROTH16' or 'PGHR13').\nNote that the zkSNARK must match the one " +
+                    "used on the prover server.")
     parser.add_argument("zksnark", help="Set the zkSNARK to use")
     args = parser.parse_args()
     if args.zksnark not in constants.VALID_ZKSNARKS:
@@ -230,8 +231,13 @@ def get_contracts_dir() -> str:
         join(get_zeth_dir(), "zeth-contracts", "contracts"))
 
 
+def get_zion_contracts_dir() -> str:
+    return os.environ.get(
+        'ZION_CONTRACTS_DIR')
+
+
 def string_list_flatten(
-        strs_list: Union[List[str], List[Union[str, List[str]]]]) -> List[str]:
+    strs_list: Union[List[str], List[Union[str, List[str]]]]) -> List[str]:
     """
     Flatten a list containing strings or lists of strings.
     """

@@ -11,12 +11,15 @@ from commands.constants import \
     ADDRESS_FILE_DEFAULT, WALLET_DIR_DEFAULT, ETH_RPC_ENDPOINT_DEFAULT, \
     MERKLE_TREE_FILE_DEFAULT
 from commands.zeth_deploy import deploy
+from commands.zeth_deploy_zion import deploy_zion
 from commands.zeth_gen_address import gen_address
 from commands.zeth_sync import sync
 from commands.zeth_mix import mix
 from commands.zeth_ls_notes import ls_notes
 from commands.zeth_ls_commits import ls_commits
 from commands.zeth_token_approve import token_approve
+from commands.zion_initiate import zion_initiate
+from commands.zion_respond import zion_respond
 from click import group, command, option, pass_context, ClickException, Context
 from click_default_group import DefaultGroup
 from typing import Optional
@@ -87,9 +90,12 @@ def zeth(
 
 
 zeth.add_command(deploy)
+zeth.add_command(deploy_zion)
 zeth.add_command(gen_address)
 zeth.add_command(sync)
 zeth.add_command(mix)
+zeth.add_command(zion_initiate)
+zeth.add_command(zion_respond)
 zeth.add_command(ls_notes)
 zeth.add_command(ls_commits)
 zeth.add_command(token_approve)

@@ -32,23 +32,18 @@ from Crypto import Random
 from hashlib import blake2s, sha256
 from typing import Tuple, Dict, List, Callable, Iterator, Optional, Any
 
-
 # Value of a single unit (in Wei) of vpub_in and vpub_out.  Use Szabos (10^12
 # Wei).
 ZETH_PUBLIC_UNIT_VALUE = 1000000000000
 
-
 ZERO_UNITS_HEX = "0000000000000000"
 
-
-COMMITMENT_VALUE_PADDING = bytes(int(192/8))
-
+COMMITMENT_VALUE_PADDING = bytes(int(192 / 8))
 
 # JoinSplit Signature Keys definitions
 JoinsplitSigVerificationKey = signing.SigningVerificationKey
 JoinsplitSigSecretKey = signing.SigningSecretKey
 JoinsplitSigKeyPair = signing.SigningKeyPair
-
 
 ComputeHSigCB = Callable[[bytes, bytes, JoinsplitSigVerificationKey], bytes]
 
@@ -83,6 +78,7 @@ class ZethAddressPub:
     """
     Public half of a zethAddress.  addr_pk = (a_pk and k_pk)
     """
+
     def __init__(self, a_pk: OwnershipPublicKey, k_pk: EncryptionPublicKey):
         self.a_pk: OwnershipPublicKey = a_pk
         self.k_pk: EncryptionPublicKey = k_pk
@@ -112,6 +108,7 @@ class ZethAddressPriv:
     """
     Secret addr_sk, consisting of a_sk and k_sk
     """
+
     def __init__(self, a_sk: OwnershipSecretKey, k_sk: EncryptionSecretKey):
         self.a_sk: OwnershipSecretKey = a_sk
         self.k_sk: EncryptionSecretKey = k_sk
@@ -141,19 +138,20 @@ class ZethAddress:
     Secret and public keys for both ownership and encryption (referrred to as
     "zethAddress" in the paper).
     """
+
     def __init__(
-            self,
-            a_pk: OwnershipPublicKey,
-            k_pk: EncryptionPublicKey,
-            a_sk: OwnershipSecretKey,
-            k_sk: EncryptionSecretKey):
+        self,
+        a_pk: OwnershipPublicKey,
+        k_pk: EncryptionPublicKey,
+        a_sk: OwnershipSecretKey,
+        k_sk: EncryptionSecretKey):
         self.addr_pk = ZethAddressPub(a_pk, k_pk)
         self.addr_sk = ZethAddressPriv(a_sk, k_sk)
 
     @staticmethod
     def from_key_pairs(
-            ownership: OwnershipKeyPair,
-            encryption: EncryptionKeyPair) -> ZethAddress:
+        ownership: OwnershipKeyPair,
+        encryption: EncryptionKeyPair) -> ZethAddress:
         return ZethAddress(
             ownership.a_pk,
             encryption.k_pk,
@@ -162,8 +160,8 @@ class ZethAddress:
 
     @staticmethod
     def from_secret_public(
-            js_secret: ZethAddressPriv,
-            js_public: ZethAddressPub) -> ZethAddress:
+        js_secret: ZethAddressPriv,
+        js_public: ZethAddressPub) -> ZethAddress:
         return ZethAddress(
             js_public.a_pk, js_public.k_pk, js_secret.a_sk, js_secret.k_sk)
 
@@ -203,10 +201,10 @@ def from_zeth_units(zeth_units: int) -> EtherValue:
 
 
 def create_zeth_notes(
-        phi: str,
-        hsig: bytes,
-        output0: Tuple[OwnershipPublicKey, int],
-        output1: Tuple[OwnershipPublicKey, int]
+    phi: str,
+    hsig: bytes,
+    output0: Tuple[OwnershipPublicKey, int],
+    output1: Tuple[OwnershipPublicKey, int]
 ) -> Tuple[ZethNote, ZethNote]:
     """
     Create two ordered ZethNotes. This function is used to generate new output
@@ -273,8 +271,8 @@ def compute_commitment(zeth_note: ZethNote) -> bytes:
 
 
 def compute_nullifier(
-        zeth_note: ZethNote,
-        spending_authority_ask: OwnershipSecretKey) -> bytes:
+    zeth_note: ZethNote,
+    spending_authority_ask: OwnershipSecretKey) -> bytes:
     """
     Returns nf = blake2s(1110 || [a_sk]_252 || rho)
     """
@@ -289,11 +287,11 @@ def compute_nullifier(
 
 
 def create_joinsplit_input(
-        merkle_path: List[str],
-        address: int,
-        note: ZethNote,
-        a_sk: OwnershipSecretKey,
-        nullifier: bytes) -> JoinsplitInput:
+    merkle_path: List[str],
+    address: int,
+    note: ZethNote,
+    a_sk: OwnershipSecretKey,
+    nullifier: bytes) -> JoinsplitInput:
     return JoinsplitInput(
         merkle_path=merkle_path,
         address=address,
@@ -317,7 +315,7 @@ def get_dummy_rho() -> str:
 
 
 def get_dummy_input_and_address(
-        a_pk: OwnershipPublicKey) -> Tuple[int, ZethNote]:
+    a_pk: OwnershipPublicKey) -> Tuple[int, ZethNote]:
     """
     Create a zeth note and address, for use as circuit inputs where there is no
     real input.
@@ -335,18 +333,18 @@ def get_dummy_input_and_address(
 
 
 def compute_joinsplit2x2_inputs(
-        mk_root: bytes,
-        input0: Tuple[int, ZethNote],
-        mk_path0: List[str],
-        input1: Tuple[int, ZethNote],
-        mk_path1: List[str],
-        sender_ask: OwnershipSecretKey,
-        output0: Tuple[OwnershipPublicKey, int],
-        output1: Tuple[OwnershipPublicKey, int],
-        public_in_value_zeth_units: int,
-        public_out_value_zeth_units: int,
-        sign_vk: JoinsplitSigVerificationKey,
-        compute_h_sig_cb: Optional[ComputeHSigCB] = None
+    mk_root: bytes,
+    input0: Tuple[int, ZethNote],
+    mk_path0: List[str],
+    input1: Tuple[int, ZethNote],
+    mk_path1: List[str],
+    sender_ask: OwnershipSecretKey,
+    output0: Tuple[OwnershipPublicKey, int],
+    output1: Tuple[OwnershipPublicKey, int],
+    public_in_value_zeth_units: int,
+    public_out_value_zeth_units: int,
+    sign_vk: JoinsplitSigVerificationKey,
+    compute_h_sig_cb: Optional[ComputeHSigCB] = None
 ) -> prover_pb2.ProofInputs:
     """
     Create a ProofInput object for joinsplit parameters
@@ -396,12 +394,13 @@ class ZethClient:
     """
     Context for zeth operations
     """
+
     def __init__(
-            self,
-            web3: Any,
-            prover_client: ProverClient,
-            mixer_instance: Any,
-            zksnark: IZKSnarkProvider):
+        self,
+        web3: Any,
+        prover_client: ProverClient,
+        mixer_instance: Any,
+        zksnark: IZKSnarkProvider):
         self._prover_client = prover_client
         self.web3 = web3
         self._zksnark = zksnark
@@ -409,10 +408,10 @@ class ZethClient:
 
     @staticmethod
     def open(
-            web3: Any,
-            prover_client: ProverClient,
-            mixer_instance: Any,
-            zksnark: IZKSnarkProvider) -> ZethClient:
+        web3: Any,
+        prover_client: ProverClient,
+        mixer_instance: Any,
+        zksnark: IZKSnarkProvider) -> ZethClient:
         """
         Create a client for an existing Zeth deployment.
         """
@@ -424,13 +423,13 @@ class ZethClient:
 
     @staticmethod
     def deploy(
-            web3: Any,
-            prover_client: ProverClient,
-            mk_tree_depth: int,
-            deployer_eth_address: str,
-            zksnark: IZKSnarkProvider,
-            token_address: Optional[str] = None,
-            deploy_gas: Optional[EtherValue] = None) -> ZethClient:
+        web3: Any,
+        prover_client: ProverClient,
+        mk_tree_depth: int,
+        deployer_eth_address: str,
+        zksnark: IZKSnarkProvider,
+        token_address: Optional[str] = None,
+        deploy_gas: Optional[EtherValue] = None) -> ZethClient:
         """
         Deploy Zeth contracts.
         """
@@ -438,7 +437,7 @@ class ZethClient:
         vk_obj = prover_client.get_verification_key()
         vk_json = zksnark.parse_verification_key(vk_obj)
         deploy_gas = deploy_gas or \
-            EtherValue(constants.DEPLOYMENT_GAS_WEI, 'wei')
+                     EtherValue(constants.DEPLOYMENT_GAS_WEI, 'wei')
 
         print("[INFO] 2. Received VK, writing verification key...")
         write_verification_key(vk_json)
@@ -460,14 +459,66 @@ class ZethClient:
             mixer_instance,
             zksnark)
 
+    @staticmethod
+    def deploy_zion(
+        web3: Any,
+        prover_client: ProverClient,
+        mk_tree_depth: int,
+        deployer_eth_address: str,
+        zksnark: IZKSnarkProvider,
+        ethstore: str,
+        tradeinit: str,
+        traderesp: str,
+        initcancel: str,
+        respcancel: str,
+        confirmed: str,
+        token_address: Optional[str] = None,
+        deploy_gas: Optional[EtherValue] = None) -> ZethClient:
+        """
+        Deploy Zeth contracts.
+        """
+        print("[INFO] 1. Fetching verification key from the proving server")
+        vk_obj = prover_client.get_verification_key()
+        vk_json = zksnark.parse_verification_key(vk_obj)
+        deploy_gas = deploy_gas or \
+                     EtherValue(constants.DEPLOYMENT_GAS_WEI, 'wei')
+
+        print("[INFO] 2. Received VK, writing verification key...")
+        write_verification_key(vk_json)
+
+        print("[INFO] 3. VK written, deploying smart contracts...")
+        # Uses Groth16 by default
+        mixer_interface = contracts.compile_mixer_zion()
+        mixer_instance = contracts.deploy_mixer_zion(
+            web3,
+            mk_tree_depth,
+            mixer_interface,
+            vk_json,
+            deployer_eth_address,
+            deploy_gas.wei,
+            token_address or "0x0000000000000000000000000000000000000000",
+            zksnark,
+            ethstore,
+            tradeinit,
+            traderesp,
+            initcancel,
+            respcancel,
+            confirmed
+        )
+        return ZethClient(
+            web3,
+            prover_client,
+            mixer_instance,
+            zksnark)
+
     def deposit(
-            self,
-            mk_tree: MerkleTree,
-            zeth_address: ZethAddress,
-            sender_eth_address: str,
-            eth_amount: EtherValue,
-            outputs: Optional[List[Tuple[ZethAddressPub, EtherValue]]] = None,
-            tx_value: Optional[EtherValue] = None
+        self,
+        mk_tree: MerkleTree,
+        zeth_address: ZethAddress,
+        sender_eth_address: str,
+        eth_amount: EtherValue,
+        outputs: Optional[List[Tuple[ZethAddressPub, EtherValue]]] = None,
+        tx_value: Optional[EtherValue] = None
     ) -> str:
         if not outputs or len(outputs) == 0:
             outputs = [(zeth_address.addr_pk, eth_amount)]
@@ -482,16 +533,16 @@ class ZethClient:
             tx_value=tx_value)
 
     def joinsplit(
-            self,
-            mk_tree: MerkleTree,
-            sender_ownership_keypair: OwnershipKeyPair,
-            sender_eth_address: str,
-            inputs: List[Tuple[int, ZethNote]],
-            outputs: List[Tuple[ZethAddressPub, EtherValue]],
-            v_in: EtherValue,
-            v_out: EtherValue,
-            tx_value: Optional[EtherValue] = None,
-            compute_h_sig_cb: Optional[ComputeHSigCB] = None) -> str:
+        self,
+        mk_tree: MerkleTree,
+        sender_ownership_keypair: OwnershipKeyPair,
+        sender_eth_address: str,
+        inputs: List[Tuple[int, ZethNote]],
+        outputs: List[Tuple[ZethAddressPub, EtherValue]],
+        v_in: EtherValue,
+        v_out: EtherValue,
+        tx_value: Optional[EtherValue] = None,
+        compute_h_sig_cb: Optional[ComputeHSigCB] = None) -> str:
         assert len(inputs) <= constants.JS_INPUTS
         assert len(outputs) <= constants.JS_OUTPUTS
 
@@ -567,17 +618,199 @@ class ZethClient:
             tx_value.wei,
             constants.DEFAULT_MIX_GAS_WEI)
 
+    def zion_joinsplit_init(
+        self,
+        mk_tree: MerkleTree,
+        sender_ownership_keypair: OwnershipKeyPair,
+        sender_eth_address: str,
+        inputs: List[Tuple[int, ZethNote]],
+        outputs: List[Tuple[ZethAddressPub, EtherValue]],
+        v_in: EtherValue,
+        v_out: EtherValue,
+        tx_value: Optional[EtherValue] = None,
+        compute_h_sig_cb: Optional[ComputeHSigCB] = None) -> str:
+        assert len(inputs) <= constants.JS_INPUTS
+        assert len(outputs) <= constants.JS_OUTPUTS
+
+        sender_a_sk = sender_ownership_keypair.a_sk
+        sender_a_pk = sender_ownership_keypair.a_pk
+        inputs = \
+            inputs + \
+            [get_dummy_input_and_address(sender_a_pk)
+             for _ in range(constants.JS_INPUTS - len(inputs))]
+        mk_root = mk_tree.get_root()
+        mk_paths = [compute_merkle_path(addr, mk_tree) for addr, _ in inputs]
+
+        # Generate output notes and proof.  Dummy outputs are constructed with
+        # value 0 to an invalid ZethAddressPub, formed from the senders
+        # a_pk, and an ephemeral k_pk.
+        dummy_k_pk = generate_encryption_keypair().k_pk
+        dummy_addr_pk = ZethAddressPub(sender_a_pk, dummy_k_pk)
+        outputs = \
+            outputs + \
+            [(dummy_addr_pk, EtherValue(0))
+             for _ in range(constants.JS_OUTPUTS - len(outputs))]
+        outputs_with_a_pk = \
+            [(zeth_addr.a_pk, to_zeth_units(value))
+             for (zeth_addr, value) in outputs]
+
+        # Timer used to time proof-generation round trip time.
+        timer = Timer.started()
+
+        (output_note1, output_note2, proof_json, signing_keypair) = \
+            self.get_proof_joinsplit_2_by_2(
+                mk_root,
+                inputs[0],
+                mk_paths[0],
+                inputs[1],
+                mk_paths[1],
+                sender_a_sk,
+                outputs_with_a_pk[0],
+                outputs_with_a_pk[1],
+                to_zeth_units(v_in),
+                to_zeth_units(v_out),
+                compute_h_sig_cb)
+
+        proof_gen_time_s = timer.elapsed_seconds()
+        print(f"PROOF GEN ROUND TRIP: {proof_gen_time_s} seconds")
+
+        # Encrypt the notes
+        outputs_and_notes = zip(outputs, [output_note1, output_note2])
+        output_notes_with_k_pk = \
+            [(note, zeth_addr.k_pk)
+             for ((zeth_addr, _), note) in outputs_and_notes]
+        (sender_eph_pk, ciphertexts) = encrypt_notes(output_notes_with_k_pk)
+
+        # Sign
+        signature = joinsplit_sign(
+            signing_keypair,
+            sender_eth_address,
+            sender_eph_pk,
+            ciphertexts,
+            proof_json)
+
+        # By default transfer exactly v_in, otherwise allow caller to manually
+        # specify.
+        tx_value = tx_value or v_in
+
+        return self.zion_initiate(
+            sender_eph_pk,
+            ciphertexts[0],
+            ciphertexts[1],
+            proof_json,
+            signing_keypair.vk,
+            signature,
+            sender_eth_address,
+            tx_value.wei,
+            constants.DEFAULT_MIX_GAS_WEI)
+
+    def zion_joinsplit_respond(
+        self,
+        mk_tree: MerkleTree,
+        sender_ownership_keypair: OwnershipKeyPair,
+        sender_eth_address: str,
+        inputs: List[Tuple[int, ZethNote]],
+        outputs: List[Tuple[ZethAddressPub, EtherValue]],
+        v_in: EtherValue,
+        v_out: EtherValue,
+        chain_id,
+        block_hash,
+        contract_addr,
+        ion_proof,
+        initiator_commitment,
+        tx_value: Optional[EtherValue] = None,
+        compute_h_sig_cb: Optional[ComputeHSigCB] = None) -> str:
+        assert len(inputs) <= constants.JS_INPUTS
+        assert len(outputs) <= constants.JS_OUTPUTS
+
+        sender_a_sk = sender_ownership_keypair.a_sk
+        sender_a_pk = sender_ownership_keypair.a_pk
+        inputs = \
+            inputs + \
+            [get_dummy_input_and_address(sender_a_pk)
+             for _ in range(constants.JS_INPUTS - len(inputs))]
+        mk_root = mk_tree.get_root()
+        mk_paths = [compute_merkle_path(addr, mk_tree) for addr, _ in inputs]
+
+        # Generate output notes and proof.  Dummy outputs are constructed with
+        # value 0 to an invalid ZethAddressPub, formed from the senders
+        # a_pk, and an ephemeral k_pk.
+        dummy_k_pk = generate_encryption_keypair().k_pk
+        dummy_addr_pk = ZethAddressPub(sender_a_pk, dummy_k_pk)
+        outputs = \
+            outputs + \
+            [(dummy_addr_pk, EtherValue(0))
+             for _ in range(constants.JS_OUTPUTS - len(outputs))]
+        outputs_with_a_pk = \
+            [(zeth_addr.a_pk, to_zeth_units(value))
+             for (zeth_addr, value) in outputs]
+
+        # Timer used to time proof-generation round trip time.
+        timer = Timer.started()
+
+        (output_note1, output_note2, proof_json, signing_keypair) = \
+            self.get_proof_joinsplit_2_by_2(
+                mk_root,
+                inputs[0],
+                mk_paths[0],
+                inputs[1],
+                mk_paths[1],
+                sender_a_sk,
+                outputs_with_a_pk[0],
+                outputs_with_a_pk[1],
+                to_zeth_units(v_in),
+                to_zeth_units(v_out),
+                compute_h_sig_cb)
+
+        proof_gen_time_s = timer.elapsed_seconds()
+        print(f"PROOF GEN ROUND TRIP: {proof_gen_time_s} seconds")
+
+        # Encrypt the notes
+        outputs_and_notes = zip(outputs, [output_note1, output_note2])
+        output_notes_with_k_pk = \
+            [(note, zeth_addr.k_pk)
+             for ((zeth_addr, _), note) in outputs_and_notes]
+        (sender_eph_pk, ciphertexts) = encrypt_notes(output_notes_with_k_pk)
+
+        # Sign
+        signature = joinsplit_sign(
+            signing_keypair,
+            sender_eth_address,
+            sender_eph_pk,
+            ciphertexts,
+            proof_json)
+
+        # By default transfer exactly v_in, otherwise allow caller to manually
+        # specify.
+        tx_value = tx_value or v_in
+
+        return self.zion_respond(
+            sender_eph_pk,
+            ciphertexts[0],
+            ciphertexts[1],
+            proof_json,
+            signing_keypair.vk,
+            signature,
+            sender_eth_address,
+            tx_value.wei,
+            constants.DEFAULT_MIX_GAS_WEI,
+            chain_id,
+            block_hash,
+            contract_addr,
+            ion_proof,
+            initiator_commitment)
+
     def mix(
-            self,
-            pk_sender: EncryptionPublicKey,
-            ciphertext1: bytes,
-            ciphertext2: bytes,
-            parsed_proof: GenericProof,
-            vk: JoinsplitSigVerificationKey,
-            sigma: int,
-            sender_address: str,
-            wei_pub_value: int,
-            call_gas: int) -> str:
+        self,
+        pk_sender: EncryptionPublicKey,
+        ciphertext1: bytes,
+        ciphertext2: bytes,
+        parsed_proof: GenericProof,
+        vk: JoinsplitSigVerificationKey,
+        sigma: int,
+        sender_address: str,
+        wei_pub_value: int,
+        call_gas: int) -> str:
         return contracts.mix(
             self.mixer_instance,
             pk_sender,
@@ -591,19 +824,77 @@ class ZethClient:
             call_gas,
             self._zksnark)
 
+    def zion_initiate(
+        self,
+        pk_sender: EncryptionPublicKey,
+        ciphertext1: bytes,
+        ciphertext2: bytes,
+        parsed_proof: GenericProof,
+        vk: JoinsplitSigVerificationKey,
+        sigma: int,
+        sender_address: str,
+        wei_pub_value: int,
+        call_gas: int) -> str:
+        return contracts.zion_initiate(
+            self.mixer_instance,
+            pk_sender,
+            ciphertext1,
+            ciphertext2,
+            parsed_proof,
+            vk,
+            sigma,
+            sender_address,
+            wei_pub_value,
+            call_gas,
+            self._zksnark)
+
+    def zion_respond(
+        self,
+        pk_sender: EncryptionPublicKey,
+        ciphertext1: bytes,
+        ciphertext2: bytes,
+        parsed_proof: GenericProof,
+        vk: JoinsplitSigVerificationKey,
+        sigma: int,
+        sender_address: str,
+        wei_pub_value: int,
+        call_gas: int,
+        chain_id,
+        block_hash,
+        contract_addr,
+        ion_proof,
+        initiator_commitment) -> str:
+        return contracts.zion_respond(
+            self.mixer_instance,
+            pk_sender,
+            ciphertext1,
+            ciphertext2,
+            parsed_proof,
+            vk,
+            sigma,
+            sender_address,
+            wei_pub_value,
+            call_gas,
+            self._zksnark,
+            chain_id,
+            block_hash,
+            contract_addr,
+            ion_proof,
+            initiator_commitment)
+
     def get_proof_joinsplit_2_by_2(
-            self,
-            mk_root: bytes,
-            input0: Tuple[int, ZethNote],
-            mk_path0: List[str],
-            input1: Tuple[int, ZethNote],
-            mk_path1: List[str],
-            sender_ask: OwnershipSecretKey,
-            output0: Tuple[OwnershipPublicKey, int],
-            output1: Tuple[OwnershipPublicKey, int],
-            public_in_value_zeth_units: int,
-            public_out_value_zeth_units: int,
-            compute_h_sig_cb: Optional[ComputeHSigCB] = None
+        self,
+        mk_root: bytes,
+        input0: Tuple[int, ZethNote],
+        mk_path0: List[str],
+        input1: Tuple[int, ZethNote],
+        mk_path1: List[str],
+        sender_ask: OwnershipSecretKey,
+        output0: Tuple[OwnershipPublicKey, int],
+        output1: Tuple[OwnershipPublicKey, int],
+        public_in_value_zeth_units: int,
+        public_out_value_zeth_units: int,
+        compute_h_sig_cb: Optional[ComputeHSigCB] = None
     ) -> Tuple[ZethNote, ZethNote, Dict[str, Any], JoinsplitSigKeyPair]:
         """
         Query the prover server to generate a proof for the given joinsplit
@@ -636,7 +927,7 @@ class ZethClient:
 
 
 def encrypt_notes(
-        notes: List[Tuple[ZethNote, EncryptionPublicKey]]
+    notes: List[Tuple[ZethNote, EncryptionPublicKey]]
 ) -> Tuple[EncryptionPublicKey, List[bytes]]:
     """
     Encrypts a set of output notes to be decrypted by the respective receivers.
@@ -657,9 +948,9 @@ def encrypt_notes(
 
 
 def receive_notes(
-        event_data: List[contracts.MixOutputEvents],
-        sender_k_pk: EncryptionPublicKey,
-        receiver_k_sk: EncryptionSecretKey
+    event_data: List[contracts.MixOutputEvents],
+    sender_k_pk: EncryptionPublicKey,
+    receiver_k_sk: EncryptionSecretKey
 ) -> Iterator[Tuple[int, bytes, ZethNote]]:
     """
     Given the receivers secret key, and the event data from a transaction
@@ -695,11 +986,11 @@ def _encode_proof_and_inputs(proof_json: GenericProof) -> Tuple[bytes, bytes]:
 
 
 def joinsplit_sign(
-        signing_keypair: JoinsplitSigKeyPair,
-        sender_eth_address: str,
-        sender_eph_pk: EncryptionPublicKey,
-        ciphertexts: List[bytes],
-        proof_json: GenericProof,
+    signing_keypair: JoinsplitSigKeyPair,
+    sender_eth_address: str,
+    sender_eph_pk: EncryptionPublicKey,
+    ciphertexts: List[bytes],
+    proof_json: GenericProof,
 ) -> int:
     """
     Generate a signature on the hash of the ciphertexts, proofs and
@@ -730,9 +1021,9 @@ def joinsplit_sign(
 
 
 def compute_h_sig(
-        nf0: bytes,
-        nf1: bytes,
-        sign_vk: JoinsplitSigVerificationKey) -> bytes:
+    nf0: bytes,
+    nf1: bytes,
+    sign_vk: JoinsplitSigVerificationKey) -> bytes:
     """
     Compute h_sig = sha256(nf0 || nf1 || sign_vk)
     Flatten the verification key
